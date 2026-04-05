@@ -1,0 +1,189 @@
+.como-pedir {
+  padding-top: 5rem;
+}
+
+/* Notice banner */
+.como-pedir__notice {
+  background: linear-gradient(135deg, rgba(247, 215, 148, 0.25), rgba(247, 215, 148, 0.1));
+  border-top: 1px solid rgba(247, 215, 148, 0.5);
+  border-bottom: 1px solid rgba(247, 215, 148, 0.5);
+  padding: 1.5rem 0;
+}
+
+.como-pedir__notice-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.como-pedir__notice-icon {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.como-pedir__notice strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.como-pedir__notice p {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+/* Steps */
+.como-pedir__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.como-pedir__step {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.como-pedir__step--reverse {
+  grid-template-columns: 120px 1fr;
+}
+
+/* Step visual */
+.como-pedir__step-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.como-pedir__step-circle {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+}
+
+.como-pedir__step-num {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--color-accent);
+  color: var(--color-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.como-pedir__step-line {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--color-primary-light), transparent);
+  margin: 0.5rem 0;
+}
+
+/* Step content */
+.como-pedir__step-content {
+  padding: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.como-pedir__step-content h3 {
+  font-size: 1.2rem;
+  color: var(--color-text);
+  margin-bottom: 0.6rem;
+}
+
+.como-pedir__step-content p {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.como-pedir__tips {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.como-pedir__tips li {
+  font-size: 0.85rem;
+  color: var(--color-primary-dark);
+  font-weight: 500;
+}
+
+/* FAQ */
+.como-pedir__faq {
+  background: var(--color-cream-dark);
+}
+
+.faq__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.faq__item {
+  padding: 1.5rem;
+}
+
+.faq__item h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 0.6rem;
+}
+
+.faq__item p {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .como-pedir__step {
+    grid-template-columns: 80px 1fr;
+    gap: 1rem;
+  }
+
+  .faq__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .como-pedir__step {
+    grid-template-columns: 1fr;
+  }
+
+  .como-pedir__step-visual {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .como-pedir__step-line {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(to right, var(--color-primary-light), transparent);
+    margin: 0 0.5rem;
+  }
+}
