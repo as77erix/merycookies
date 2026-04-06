@@ -1,3 +1,4 @@
+import princesasImg from '../assets/cookies_princesas.png'
 import safariImg from '../assets/cookies_safari.png'
 import navImg from '../assets/cookies_navidad.png'
 import babyImg from '../assets/cookies_babyshower.png'
@@ -12,6 +13,7 @@ export const categories = [
   { id: 'autos', label: 'Autos & Vehículos' },
   { id: 'flores', label: 'Flores & Mariposas' },
   { id: 'sirenas', label: 'Sirenas & Mar' },
+  { id: 'princesas', label: 'Princesas' },
 ]
 
 export const gallery = [
@@ -46,6 +48,14 @@ export const gallery = [
     image: autosImg,
     category: 'autos',
     tag: 'Ideal para él',
+  },
+  {
+    id: 6,
+    title: 'Princesas',
+    description: 'Coronas, castillos y detalles mágicos glaseados para las pequeñas princesas.',
+    image: princesasImg,
+    category: 'princesas',
+    tag: 'Ideal para ella',
   },
   {
     id: 5,
