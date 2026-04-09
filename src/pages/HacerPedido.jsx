@@ -81,6 +81,13 @@ export default function HacerPedido() {
       return
     }
     setSaving(true)
+    // Upsert cliente por email
+    const { data: clienteData } = await supabase
+      .from('clientes')
+      .upsert({ nombre: form.nombre, email: form.email, telefono: form.telefono, como_nos_conociste: form.comoNosConociste }, { onConflict: 'email' })
+      .select('id')
+      .single()
+
     await supabase.from('pedidos').insert({
       nombre: form.nombre,
       email: form.email,
@@ -93,6 +100,7 @@ export default function HacerPedido() {
       mensaje: form.mensaje,
       como_nos_conociste: form.comoNosConociste,
       estado: 'nuevo',
+      cliente_id: clienteData?.id || null,
     })
     setSaving(false)
     setSubmitted(true)

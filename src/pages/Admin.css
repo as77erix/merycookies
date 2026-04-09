@@ -308,3 +308,11 @@
   border: 1px solid #e0d0c1;
   font-size: 0.875rem;
 }
+
+.admin-search-input {
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e0d0c1;
+  font-size: 0.875rem;
+  min-width: 260px;
+}

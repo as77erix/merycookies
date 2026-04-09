@@ -4,10 +4,12 @@ import AdminLogin from '../components/admin/AdminLogin'
 import AdminTematicas from '../components/admin/AdminTematicas'
 import AdminImagenes from '../components/admin/AdminImagenes'
 import AdminPedidos from '../components/admin/AdminPedidos'
+import AdminClientes from '../components/admin/AdminClientes'
 import './Admin.css'
 
 const TABS = [
   { id: 'pedidos', label: '📋 Pedidos' },
+  { id: 'clientes', label: '👥 Clientes' },
   { id: 'tematicas', label: '🏷️ Temáticas' },
   { id: 'imagenes', label: '🖼️ Imágenes' },
 ]
@@ -56,6 +58,7 @@ export default function Admin() {
 
       <div className="admin-content">
         {tab === 'pedidos' && <AdminPedidos />}
+        {tab === 'clientes' && <AdminClientes />}
         {tab === 'tematicas' && <AdminTematicas />}
         {tab === 'imagenes' && <AdminImagenes />}
       </div>
