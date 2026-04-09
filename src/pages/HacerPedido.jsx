@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { categories } from '../data/gallery'
+import { supabase } from '../lib/supabase'
 import './HacerPedido.css'
 
 const eventos = [
@@ -28,6 +28,13 @@ export default function HacerPedido() {
   })
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState({})
+  const [tematicas, setTematicas] = useState([])
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    supabase.from('tematicas').select('id, nombre').eq('activa', true).order('nombre')
+      .then(({ data }) => setTematicas(data || []))
+  }, [])
 
   const validate = () => {
     const e = {}
@@ -66,13 +73,28 @@ export default function HacerPedido() {
     return encodeURIComponent(lines.join('\n'))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
       return
     }
+    setSaving(true)
+    await supabase.from('pedidos').insert({
+      nombre: form.nombre,
+      email: form.email,
+      telefono: form.telefono,
+      fecha_evento: form.fechaEvento,
+      tipo_evento: form.tipoEvento,
+      cantidad: form.cantidad,
+      tematica: form.tematica,
+      colores: form.colores,
+      mensaje: form.mensaje,
+      como_nos_conociste: form.comoNosConociste,
+      estado: 'nuevo',
+    })
+    setSaving(false)
     setSubmitted(true)
   }
 
@@ -252,10 +274,10 @@ export default function HacerPedido() {
                   onChange={handleChange}
                 >
                   <option value="">Seleccioná o describí abajo</option>
-                  {categories.filter(c => c.id !== 'todos').map(c => (
-                    <option key={c.id} value={c.label}>{c.label}</option>
+                  {tematicas.map(t => (
+                    <option key={t.id} value={t.nombre}>{t.nombre}</option>
                   ))}
-                  <option value="personalizada">Diseño personalizado</option>
+                  <option value="Diseño personalizado">Diseño personalizado</option>
                 </select>
               </div>
               <div className="form-group">
@@ -299,8 +321,8 @@ export default function HacerPedido() {
               </select>
             </div>
 
-            <button type="submit" className="btn btn-primary btn-large" style={{ width: '100%', justifyContent: 'center' }}>
-              ✨ Enviar pedido
+            <button type="submit" disabled={saving} className="btn btn-primary btn-large" style={{ width: '100%', justifyContent: 'center' }}>
+              {saving ? 'Enviando...' : '✨ Enviar pedido'}
             </button>
           </form>
 
