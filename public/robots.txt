@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /#/admin
+
+Sitemap: https://merycookies.com.ar/sitemap.xml
