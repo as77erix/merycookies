@@ -130,6 +130,11 @@
   margin-top: 0.5rem;
 }
 
+.admin-file-count {
+  font-size: 0.8rem;
+  color: #888;
+}
+
 .admin-error {
   color: #e05252;
   font-size: 0.875rem;

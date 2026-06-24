@@ -6,9 +6,10 @@ export default function AdminImagenes() {
   const [tematicas, setTematicas] = useState([])
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState({ titulo: '', descripcion: '', tematica_id: '', tag: '', orden: 0 })
-  const [file, setFile] = useState(null)
+  const [files, setFiles] = useState([])
   const [editId, setEditId] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [progress, setProgress] = useState('')
   const [error, setError] = useState('')
 
   const load = async () => {
@@ -38,31 +39,45 @@ export default function AdminImagenes() {
     setSaving(true)
     setError('')
     try {
-      let url = editId ? imagenes.find(i => i.id === editId)?.url : null
-      if (file) url = await uploadImage(file)
-      if (!url) { setError('Seleccioná una imagen'); setSaving(false); return }
-
-      const payload = {
-        titulo: form.titulo,
-        descripcion: form.descripcion,
-        tematica_id: form.tematica_id || null,
-        tag: form.tag,
-        orden: Number(form.orden),
-        url,
-        activa: true,
-      }
       if (editId) {
-        await supabase.from('imagenes').update(payload).eq('id', editId)
+        let url = imagenes.find(i => i.id === editId)?.url
+        if (files[0]) url = await uploadImage(files[0])
+        if (!url) { setError('Seleccioná una imagen'); setSaving(false); return }
+        await supabase.from('imagenes').update({
+          titulo: form.titulo,
+          descripcion: form.descripcion,
+          tematica_id: form.tematica_id || null,
+          tag: form.tag,
+          orden: Number(form.orden),
+          url,
+          activa: true,
+        }).eq('id', editId)
       } else {
-        await supabase.from('imagenes').insert(payload)
+        if (files.length === 0) { setError('Seleccioná al menos una imagen'); setSaving(false); return }
+        for (let i = 0; i < files.length; i++) {
+          setProgress(`Subiendo ${i + 1} de ${files.length}...`)
+          const f = files[i]
+          const url = await uploadImage(f)
+          const titulo = files.length === 1 && form.titulo ? form.titulo : f.name.replace(/\.[^/.]+$/, '')
+          await supabase.from('imagenes').insert({
+            titulo,
+            descripcion: form.descripcion,
+            tematica_id: form.tematica_id || null,
+            tag: form.tag,
+            orden: Number(form.orden) + i,
+            url,
+            activa: true,
+          })
+        }
       }
       setForm({ titulo: '', descripcion: '', tematica_id: '', tag: '', orden: 0 })
-      setFile(null)
+      setFiles([])
       setEditId(null)
       load()
     } catch (err) {
       setError(err.message)
     }
+    setProgress('')
     setSaving(false)
   }
 
@@ -75,7 +90,7 @@ export default function AdminImagenes() {
       tag: img.tag || '',
       orden: img.orden || 0,
     })
-    setFile(null)
+    setFiles([])
   }
 
   const handleDelete = async (img) => {
@@ -95,7 +110,7 @@ export default function AdminImagenes() {
   const handleCancel = () => {
     setEditId(null)
     setForm({ titulo: '', descripcion: '', tematica_id: '', tag: '', orden: 0 })
-    setFile(null)
+    setFiles([])
     setError('')
   }
 
@@ -106,11 +121,17 @@ export default function AdminImagenes() {
       <form onSubmit={handleSubmit} className="admin-form">
         <div className="admin-form-row">
           <div className="admin-form-group">
-            <label>Título *</label>
-            <input type="text" value={form.titulo} onChange={e => setForm(p => ({ ...p, titulo: e.target.value }))} required />
+            <label>Título {!editId && files.length > 1 ? '(se usa el nombre del archivo)' : '*'}</label>
+            <input
+              type="text"
+              value={form.titulo}
+              onChange={e => setForm(p => ({ ...p, titulo: e.target.value }))}
+              required={!!editId || files.length <= 1}
+              disabled={!editId && files.length > 1}
+            />
           </div>
           <div className="admin-form-group">
-            <label>Temática</label>
+            <label>Temática {!editId && files.length > 1 ? '(se aplica a todas)' : ''}</label>
             <select value={form.tematica_id} onChange={e => setForm(p => ({ ...p, tematica_id: e.target.value }))}>
               <option value="">Sin temática</option>
               {tematicas.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
@@ -133,14 +154,26 @@ export default function AdminImagenes() {
             <input type="number" value={form.orden} onChange={e => setForm(p => ({ ...p, orden: e.target.value }))} min="0" />
           </div>
           <div className="admin-form-group">
-            <label>Imagen {editId ? '(opcional, reemplaza la actual)' : '*'}</label>
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} />
+            <label>{editId ? 'Imagen (opcional, reemplaza la actual)' : 'Imágenes * (podés seleccionar varias)'}</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple={!editId}
+              onChange={e => setFiles(Array.from(e.target.files))}
+            />
+            {!editId && files.length > 1 && (
+              <span className="admin-file-count">{files.length} imágenes seleccionadas</span>
+            )}
           </div>
         </div>
         {error && <p className="admin-error">{error}</p>}
         <div className="admin-form-actions">
           <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>
-            {saving ? 'Guardando...' : editId ? 'Actualizar' : 'Agregar'}
+            {saving
+              ? (progress || 'Guardando...')
+              : editId
+                ? 'Actualizar'
+                : files.length > 1 ? `Subir ${files.length} imágenes` : 'Agregar'}
           </button>
           {editId && <button type="button" className="btn btn-secondary btn-sm" onClick={handleCancel}>Cancelar</button>}
         </div>
